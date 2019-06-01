@@ -6,15 +6,6 @@ parser = argparse.ArgumentParser(description="%prog [options]", formatter_class=
 parser.add_argument("--path", dest='path',  default="", help="path")
 args = parser.parse_args()
 
-#wrong #event corresponding
-def subsample(path,feature):
-  load_f = h5py.File(path, 'r')
-  train_data=load_f.get(feature+"/train")
-  cal_index=np.random.choice(train_data.shape[0],200000,replace=False)
-  cal_data=np.take(train_data,cal_index,axis=0)
-  return cal_data
-#wrong #event corresponding
-
 feature_names = ['fat_jet', 'subjet_VR_1', 'subjet_VR_2', 'subjet_VR_3'] #, 'weight']
 files=sorted(glob.glob(args.path+"/*.h5"))
 save_f = h5py.File("MeanStd/mean_std.h5", 'w')
