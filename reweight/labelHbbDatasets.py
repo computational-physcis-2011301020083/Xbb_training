@@ -7,7 +7,6 @@ args = parser.parse_args()
 
 hCountKey = "GhostHBosonsCount"
 bCountKey = "GhostBHadronsFinalCount"
-
 def label_row(row, isHiggsSample):
     if isHiggsSample:
       if row[hCountKey] >= 1 and row[bCountKey] >= 2:
@@ -21,8 +20,6 @@ def label_row(row, isHiggsSample):
         return "qcd"
 
 filePaths = glob.glob(args.path+"/HbbDatasets/*.h5")
-#filePaths=["/global/project/projectdirs/atlas/massDecorrelatedXbb/adversarial-wei1/datasets/HbbDatasets/user.dguest.16843522._000002.output_301489_H.h5"]
-
 list1=['Split12', 'Split23', 'Qw', 'PlanarFlow', 'Angularity', 'Aplanarity', 'ZCut12', 'KtDR', 'HbbScore', 'XbbScoreQCD', 'XbbScoreTop', 'XbbScoreHiggs', 'JSSTopScore', 'pt', 'eta', 'GhostHBosonsCount', 'GhostWBosonsCount', 'GhostZBosonsCount', 'GhostTQuarksFinalCount', 'GhostBHadronsFinalCount', 'GhostCHadronsFinalCount', 'mcEventWeight', 'eventNumber', 'mass', 'C2', 'D2', 'e3', 'Tau21_wta', 'Tau32_wta', 'FoxWolfram20']
 list2=['MV2c10_discriminant', 'DL1_pu', 'DL1_pc', 'DL1_pb', 'DL1rnn_pu', 'DL1rnn_pc', 'DL1rnn_pb', 'IP2D_pu', 'IP2D_pc', 'IP2D_pb', 'IP3D_pu', 'IP3D_pc', 'IP3D_pb', 'SV1_pu', 'SV1_pc', 'SV1_pb', 'rnnip_pu', 'rnnip_pc', 'rnnip_pb', 'rnnip_ptau', 'JetFitter_energyFraction', 'JetFitter_mass', 'JetFitter_significance3d', 'JetFitter_deltaphi', 'JetFitter_deltaeta', 'JetFitter_massUncorr', 'JetFitter_dRFlightDir', 'SV1_masssvx', 'SV1_efracsvx', 'SV1_significance3d', 'SV1_dstToMatLay', 'SV1_deltaR', 'SV1_Lxy', 'SV1_L3d', 'JetFitter_nVTX', 'JetFitter_nSingleTracks', 'JetFitter_nTracksAtVtx', 'JetFitter_N2Tpair', 'SV1_N2Tpair', 'SV1_NGTinSvx', 'secondaryVtx_nTrks', 'IP2D_nTrks', 'IP3D_nTrks', 'IP2D_isDefaults', 'IP3D_isDefaults', 'JetFitter_isDefaults', 'SV1_isDefaults', 'secondaryVtx_isDefaults', 'rnnip_isDefaults', 'GhostBHadronsFinalCount', 'GhostCHadronsFinalCount', 'pt', 'eta', 'deta', 'dphi', 'dr']
 list3={}
@@ -38,7 +35,6 @@ for filePath in filePaths:
   count=count+1
   print "Processing count: ",count
   sourceDataset=filePath.split("/")[-1]
-  print sourceDataset
   isHiggsSample = "_H" in sourceDataset
   h1=pd.read_hdf(filePath, "subjet_VR_1")[list2]
   h1.rename(columns=list3,inplace=True)
@@ -52,7 +48,6 @@ for filePath in filePaths:
   newDf["pt"] = (newDf["pt"]/1000.0).astype("float64")
   newDf["mass"] = (newDf["mass"]/1000.0).astype("float64")
   newDf["m"]=newDf["mass"]
-  print newDf[newDf["label"]=="ignore"]
   newDf["weight_test"]=newDf["mcEventWeight"]
   newDf["weight"]=newDf["weight_test"]
   newDf=newDf[newDf["label"]!="ignore"]
