@@ -17,13 +17,11 @@ for i in range(0,13):
 
 for i in range(0,13):
   paths= glob.glob(args.path+"/*"+dsid[i]+"*.h5")
-  print i,paths
   for f in paths:
     hf= h5py.File(f, "r")
     events[i]=events[i]+hf["metadata"]["nEventsProcessed"]
-  print events[i]
+    
 list1={}
-
 for i in range(0,13):
   print dsid[i],filterEffTimesXsec[i]/float(events[i])
   list1[dsid[i]]=100000.0*filterEffTimesXsec[i]/float(events[i])
