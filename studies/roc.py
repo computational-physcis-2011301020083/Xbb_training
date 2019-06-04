@@ -7,16 +7,11 @@ parser.add_argument("--path", dest='path',  default="", help="path")
 args = parser.parse_args()
 
 load_file=h5py.File(args.path)
-'''
-y=load_file.get("y")
-score=load_file.get("score")
-w=load_file.get("w")
-'''
 pre=load_file.get("pre")
 y=pre[:,0]
 score=pre[:,1]
 w=pre[:,2]
-print y.shape,score.shape,w.shape
+
 eff_bkg,eff_signal,thres=roc_curve(y,score,sample_weight=w)
 plt.figure(1)
 plt.plot(eff_signal,np.power(eff_bkg,-1.0),label="test")
