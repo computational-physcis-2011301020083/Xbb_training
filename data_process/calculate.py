@@ -16,7 +16,6 @@ for i in feature_names:
   signal_data=Signal_data.get(i+"/train")
   Top_data=h5py.File(files[2],"r")
   top_data=Top_data.get(i+"/train")
-  print i,bg_data, signal_data, top_data
   cal_data = np.vstack((bg_data,signal_data,top_data))
   mean_vector = np.nanmean(cal_data, axis=0)
   std_vector = np.nanstd(cal_data, axis=0)
