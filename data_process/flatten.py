@@ -18,15 +18,7 @@ df = pd.read_hdf(args.path)
 for i in feature_names:
   if i != "weight":	
     df1=df[feature_name[i]]
-    start=0
-    end=df1.values.shape[0]
     new_hdf5.create_dataset(i, data=df1.values)
-    #save_data = new_hdf5.get(i)
-    #data=df1.values[:,:]
-    #print data
-    #save_data[start:end, :] = data
-    #print df1.values[0:10,:]
-    #print df1
   if i=="weight":
     df1=df[i]
     new_hdf5.create_dataset(i,data=df1.values)
