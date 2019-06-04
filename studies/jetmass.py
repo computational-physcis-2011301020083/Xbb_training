@@ -9,10 +9,9 @@ args = parser.parse_args()
 load_file=h5py.File(args.path)
 pre=load_file.get("pre")[0:865593,:]
 pre=np.reshape(pre,(pre.shape[0],4))
-print pre.shape,pre[:,3]>50.
-print pre[pre[:,3]>50.]
 pre=pre[(pre[:,3]<=300.) & (pre[:,3]>=50.)]
 pre1=pre[pre[:,1]>=0.25]
+
 bins = np.linspace(50, 300, 100)
 plt.figure(1)
 plt.hist(pre[:,3],weights=pre[:,2],bins=bins,label="Dijets",histtype="step")
