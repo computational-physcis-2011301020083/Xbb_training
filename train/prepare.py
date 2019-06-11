@@ -14,14 +14,19 @@ from keras.layers.normalization import BatchNormalization
 from keras.optimizers import SGD
 
 def load_meanstd(data,feature):
-  meanstd_path="MeanStd/mean_std.h5"
+  meanstd_path="PrepareData/mean_std.h5"
   meanstd_file=h5py.File(meanstd_path,"r")
   mean_vector=meanstd_file.get(feature+"/mean")
   std_vector=meanstd_file.get(feature+"/std")
   mean_vector=np.reshape(mean_vector,(1,mean_vector.shape[0]))
   std_vector=np.reshape(std_vector,(1,std_vector.shape[0]))
+  #print data
+  #print mean_vector
+  #print std_vector
+  #std_vector[std_vector == 0] = 1 
   return (data-mean_vector)/std_vector
 
+#feature_names = ['fat_jet', 'subjet_VR_1', 'subjet_VR_2', 'subjet_VR_3']
 def load_Data(data,style):
   load_f=h5py.File(data)
   #print data
@@ -45,8 +50,18 @@ def load_Data(data,style):
     y=np.full((load_data.shape[0],),0,dtype=int)
     load_y=keras.utils.to_categorical(y, num_classes=3)
   weight=load_f.get("weight/"+style)
+  xbbhiggs=load_f.get("XbbScoreHiggs/"+style)
+  pt=load_fat[:,0]
+  mass=load_fat[:,2]
   #print weight
-  load_w=weight/np.sum(weight)
+  weight=weight/np.sum(weight)
+  weight=np.reshape(weight,(weight.shape[0],1))
+  xbbhiggs=np.reshape(xbbhiggs,(weight.shape[0],1))
+  pt=np.reshape(pt,(weight.shape[0],1))
+  mass=np.reshape(mass,(weight.shape[0],1))
+  print weight.shape,mass.shape,pt.shape,xbbhiggs.shape
+  load_w=np.hstack((weight,xbbhiggs,pt,mass))
+  print load_w.shape
   return [load_data,load_y,load_w]
 
 outname="train.h5"
@@ -58,27 +73,41 @@ train_signal_data,train_signal_y,train_signal_w=load_Data(files[1],"train")
 train_top_data,train_top_y,train_top_w=load_Data(files[2],"train")
 train_data=np.vstack((train_bg_data,train_signal_data,train_top_data))
 train_y=np.vstack((train_bg_y,train_signal_y,train_top_y))
-train_w=np.hstack((train_bg_w,train_signal_w,train_top_w))
+#print train_bg_w,train_signal_w,train_top_w
+train_w=np.vstack((train_bg_w,train_signal_w,train_top_w))
+
+
 save_f.create_dataset("train/data",data=train_data)
 save_f.create_dataset("train/y",data=train_y)
 save_f.create_dataset("train/w",data=train_w)
+print train_data.shape
+print train_y.shape
+print train_w.shape
 
 valid_bg_data,valid_bg_y,valid_bg_w=load_Data(files[0],"valid")
 valid_signal_data,valid_signal_y,valid_signal_w=load_Data(files[1],"valid")
 valid_top_data,valid_top_y,valid_top_w=load_Data(files[2],"valid")
 valid_data=np.vstack((valid_bg_data,valid_signal_data,valid_top_data))
 valid_y=np.vstack((valid_bg_y,valid_signal_y,valid_top_y))
-valid_w=np.hstack((valid_bg_w,valid_signal_w,valid_top_w))
+#print valid_bg_w,valid_signal_w,valid_top_w
+valid_w=np.vstack((valid_bg_w,valid_signal_w,valid_top_w))
+
 save_f.create_dataset("valid/data",data=valid_data)
 save_f.create_dataset("valid/y",data=valid_y)
 save_f.create_dataset("valid/w",data=valid_w)
+
+#print valid_data.shape
+#print valid_y.shape
+#print valid_w.shape
 
 test_bg_data,test_bg_y,test_bg_w=load_Data(files[0],"test")
 test_signal_data,test_signal_y,test_signal_w=load_Data(files[1],"test")
 test_top_data,test_top_y,test_top_w=load_Data(files[2],"test")
 test_data=np.vstack((test_bg_data,test_signal_data,test_top_data))
 test_y=np.vstack((test_bg_y,test_signal_y,test_top_y))
-test_w=np.hstack((test_bg_w,test_signal_w,test_top_w))
+#print test_bg_w,test_signal_w,test_top_w
+test_w=np.vstack((test_bg_w,test_signal_w,test_top_w))
+
 save_f.create_dataset("test/data",data=test_data)
 save_f.create_dataset("test/y",data=test_y)
 save_f.create_dataset("test/w",data=test_w)
