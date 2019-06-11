@@ -7,21 +7,32 @@ parser.add_argument("--path", dest='path',  default="", help="path")
 args = parser.parse_args()
 
 load_file=h5py.File(args.path)
-pre=load_file.get("pre")[0:865593,:]
-pre=np.reshape(pre,(pre.shape[0],4))
-pre=pre[(pre[:,3]<=300.) & (pre[:,3]>=50.)]
-pre1=pre[pre[:,1]>=0.25]
+predict=load_file.get("predict")
+predict=np.reshape(predict,(predict.shape[0],predict.shape[1]))
+predict=predict[predict[:,2]==1]
+#predict=predict[predict[:,0]==1]
+#name="Dijets"
+name="Top"
+predict=predict[(predict[:,7]<=300.) & (predict[:,7]>=50.)]
 
+predict1=predict[predict[:,3]>=0.4]
 bins = np.linspace(50, 300, 100)
 plt.figure(1)
-plt.hist(pre[:,3],weights=pre[:,2],bins=bins,label="Dijets",histtype="step")
-plt.hist(pre1[:,3],weights=pre1[:,2],bins=bins,label="Tagged",histtype="step")
+#plt.hist(predict[:,7],weights=predict[:,4]/np.sum(predict[:,4]),bins=bins,label="Dijets mass",histtype="step")
+plt.hist(predict[:,7],weights=predict[:,4]/np.sum(predict[:,4]),bins=bins,label="Top mass",histtype="step")
+plt.hist(predict1[:,7],weights=predict1[:,4]/np.sum(predict1[:,4]),bins=bins,label="Test mass",histtype="step")
 plt.legend(loc='upper right', fontsize="x-small")
 plt.yscale("log", nonposy="clip")
-plt.xlabel("mass")
-plt.ylabel("Events")
+plt.xlabel("mass [GeV]")
+plt.ylabel("Events fraction")
+plt.ylim(top=1)
+
+plt.text(75,1*0.4,r'$\sqrt{s}$=13TeV')
+#plt.text(75,1*0.2,r'Hbb vs. Dijets')
+plt.text(75,1*0.2,r'Hbb vs. Top')
+
 plt.title("Jet mass")
-plt.savefig("jet_mass.pdf")
+plt.savefig("files/jetmass"+name+".pdf")
 plt.show()
 
 
