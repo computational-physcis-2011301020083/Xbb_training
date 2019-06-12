@@ -6,7 +6,7 @@ import numpy as np
 
 import tensorflow as tf
 from keras import backend as K
-
+'''
 # Creates a graph.
 c = []
 for d in ['/device:GPU:0', '/device:GPU:1']:
@@ -25,7 +25,7 @@ sess = tf.Session(config=config)
 #sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 # Runs the op.
 print(sess.run(sum))
-
+'''
 
 import keras
 from keras.models import Model, Sequential
@@ -58,36 +58,23 @@ def sample_generoator(data,style,n):
         dijet_samples=int(994997/n)
         top_samples=int(847761/n)
         signal_samples=int(340288/n)
-    while True:
-        
-        for i in range(n):
-       
+    while True:      
+        for i in range(n):       
             signal_block_index=range(i*signal_samples,(i+1)*signal_samples)
             dijet_block_index=range(i*dijet_samples,(i+1)*dijet_samples)
             top_block_index=range(i*top_samples,(i+1)*top_samples)
-            #print len(signal_block_index)
             signal_block=np.take(data[data[:,1]==1],signal_block_index,axis=0)
             dijet_block=np.take(data[data[:,0]==1],dijet_block_index,axis=0)
             top_block=np.take(data[data[:,2]==1],top_block_index,axis=0)
             data_block=np.vstack((signal_block,dijet_block,top_block))
             yield [data_block[:,3:134],data_block[:,0:3],np.reshape(data_block[:,134:135],(data_block[:,134:135].shape[0],))]
             #print data_block.shape
-
-
             
-
 def gen(data,style,n):
     return sample_generoator(data,style,n)
-    #a=sample_generoator(data,style,n)
-    #next(a)
-
     
 #gtrain=sample_generoator(Train_data,"train")
-#gvalid=sample_generoator(Valid_data,"valid")
-#gtrain=gen(Train_data,"train",20)
-#gvalid=gen(Valid_data,"valid",20)
-#for i in range(20):
-    
+#gvalid=sample_generoator(Valid_data,"valid"
 
 #training
 params={'num_layers': 6,'num_units': 250,'activation_type': 'relu','dropout_strength': 0.2,'learning_rate': 0.01,'momentum': 0.2,'lr_decay': 0.00001,'epochs': 100,'batch_norm': True,'output_size': 3}
@@ -156,5 +143,3 @@ history = model.fit_generator(gtrain,
                         #class_weight=None
                         #verbose=2
                         )
-
-
