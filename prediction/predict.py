@@ -27,6 +27,7 @@ h3=pd.read_hdf(paths,"subjet_VRGhostTag_3")[features2]
 h=pd.concat([h0,h1,h2,h3], axis=1)
 h["pt"] = (h["pt"]/1000.0).astype("float64")
 h["mass"] = (h["mass"]/1000.0).astype("float64")
+h=h[h["pt"]<=2000]
 data=h.values[:,5:79]
 XbbScore=h.values[:,0:3]
 
