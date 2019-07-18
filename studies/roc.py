@@ -18,12 +18,16 @@ predict=predict[predict[:,0]==0]
 #name="DijetsPt2000"
 name="TopPt500"
 
-
+#Get ture values
 y=predict[:,1]
+#Get Higgs Score of my tagger
 score=predict[:,3]
+#Get XbbScoreHiggs
 Xbb=predict[:,5]
+#Get Sample weights
 w=predict[:,4]
-print y.shape,score.shape,w.shape
+#print y.shape,score.shape,w.shape
+#Get ROC curve values
 eff_bkg,eff_signal,thres=roc_curve(y,score,sample_weight=w)
 eff_bkg1,eff_signal1,thres1=roc_curve(y,Xbb,sample_weight=w)
 
