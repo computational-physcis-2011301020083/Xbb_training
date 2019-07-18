@@ -2,6 +2,7 @@ import argparse
 import os,glob,h5py,ROOT,shutil
 parser = argparse.ArgumentParser(description="%prog [options]", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--path", dest='path',  default="", help="path")
+parser.add_argument("--model", dest='model',  default="", help="model")
 args = parser.parse_args()
 import tensorflow as tf
 from keras import backend as K
@@ -27,11 +28,10 @@ h3=pd.read_hdf(paths,"subjet_VRGhostTag_3")[features2]
 h=pd.concat([h0,h1,h2,h3], axis=1)
 h["pt"] = (h["pt"]/1000.0).astype("float64")
 h["mass"] = (h["mass"]/1000.0).astype("float64")
-h=h[h["pt"]<=2000]
 data=h.values[:,5:79]
 XbbScore=h.values[:,0:3]
 
-meanFile=h5py.File("MEANStd.h5","r")
+meanFile=h5py.File("meanstd1.h5","r")
 mean_vector=meanFile.get("mean")
 std_vector=meanFile.get("std")
 mean_vector=mean_vector[:,0:74]
@@ -40,18 +40,19 @@ data=(data-mean_vector)/std_vector
 data=np.nan_to_num(data)
 XbbScore=np.nan_to_num(XbbScore)
 
-model_file="WeiAdm2_Std_best.h5"
+model_file="WeiAdm3Std1_best.h5"
 model_pre = keras.models.load_model(model_file)
 predictions = model_pre.predict(data)
 Data=np.hstack((predictions,XbbScore,h.values[:,3:6]))
 
-new_file_name="Prediction_"+args.path.split("/")[-1]
-new_hdf5 = h5py.File("./"+new_file_name, 'w')
+new_file_name="./Prediction_"+args.path.split("/")[-1]
+new_hdf5 = h5py.File(new_file_name, 'w')
 new_hdf5.create_dataset("data",data=Data)
 
 
 print "In the output file, the information of these columns are in order :"
 print "PredictionScoreQCD,PredictionScoreHiggs,PredictionScoreTop,XbbScoreQCD,XbbScoreHiggs,XbbScoreTop,mcEventWeight,mass[GeV],pt[GeV]"
-#print Data.shape
-#print predictions[110:120,:]
-#print XbbScore[110:120,:]
+#print "Predictions: "
+#print predictions[110:140,:]
+#print "XbbScore: "
+#print XbbScore[110:140,:]
