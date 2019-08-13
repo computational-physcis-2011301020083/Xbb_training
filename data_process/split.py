@@ -13,9 +13,9 @@ save_f = h5py.File("SplitData/"+outname, 'w')
 weight=load_f.get("weight")
 N=weight.shape[0]
 train_index=np.random.choice(N,int(N*0.6),replace=False)
-remain_index=np.delete(np.arange(0,N),train_index) 
+remain_index=np.setdiff1d(np.arange(0,N),train_index) 
 test_index=np.random.choice(remain_index,int(N*0.2),replace=False)
-valid_index=np.delete(remain_index,test_index) 
+valid_index=np.setdiff1d(remain_index,test_index) 
 
 case=["train","test","valid"]
 index={"train":train_index,"test":test_index,"valid":valid_index}
