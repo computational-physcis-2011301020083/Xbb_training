@@ -43,17 +43,17 @@ model_pre = keras.models.load_model(model_file)
 predictions = model_pre.predict(data)
 Data=np.hstack((predictions,XbbScore,h.values[:,3:6]))
 
-new_file_name="./files/Prediction_"+args.path.split("/")[-1]
+new_file_name="./Prediction_"+args.path.split("/")[-1]
 new_hdf5 = h5py.File(new_file_name, 'w')
 new_hdf5.create_dataset("data",data=Data)
 
 
-#print "In the output file, the information of these columns are in order :"
-#print "PredictionScoreQCD,PredictionScoreHiggs,PredictionScoreTop,XbbScoreQCD,XbbScoreHiggs,XbbScoreTop,mcEventWeight,mass[GeV],pt[GeV]"
-print "Predictions: "
-print predictions[110:140,:]
-print "XbbScore: "
-print XbbScore[110:140,:]
+print "In the output file, the information of these columns are in order :"
+print "PredictionScoreQCD,PredictionScoreHiggs,PredictionScoreTop,XbbScoreQCD,XbbScoreHiggs,XbbScoreTop,mcEventWeight,mass[GeV],pt[GeV]"
+#print "Predictions: "
+#print predictions[110:140,:]
+#print "XbbScore: "
+#print XbbScore[110:140,:]
 
 
 
